@@ -1,0 +1,6 @@
+.post-item-container {
+    border: thin solid black;
+    padding: 5px 3px;
+    margin: 10px;
+    text-align: left;
+}
