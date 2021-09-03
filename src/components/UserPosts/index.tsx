@@ -12,8 +12,7 @@ interface propTypes {
 
 const UserPosts: React.FC = (props: propTypes) => {
 
-    const {setIsLoader} = useFullPageLoaderContext();
-    const {posts, setPosts} = usePostsContext();
+    const {posts, fetchPosts} = usePostsContext();
 
     useEffect(
         (): void => {
@@ -21,13 +20,6 @@ const UserPosts: React.FC = (props: propTypes) => {
         },
         []
     );
-
-    const fetchPosts: Function = async (): Promise<void> => {
-        setIsLoader(true);
-        const {data} = await axios({method: "GET", url: "https://jsonplaceholder.typicode.com/posts"})
-        setPosts(data);
-        setIsLoader(false);
-    }
 
     return <>
         {

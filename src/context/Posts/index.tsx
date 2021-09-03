@@ -1,11 +1,14 @@
 import React, {createContext, useContext, useMemo, useState} from 'react';
 import {post} from "../../types/post";
+import axios from "axios";
+import {useFullPageLoaderContext} from "../fullPageLoader";
 
 type valueType = {
     posts: Array<post>,
     setPosts: Function,
     deletePost: Function,
-    updatePost: Function
+    updatePost: Function,
+    fetchPosts: Function,
 }
 
 const initStates: { posts: Array<post> } = {posts: []};
@@ -20,6 +23,17 @@ interface providerProps {
 
 const PostsContextProvider: React.FC<providerProps> = ({children}: providerProps) => {
     const [posts, setPosts] = useState<Array<post>>(initStates.posts);
+
+    const {setIsLoader} = useFullPageLoaderContext();
+
+    const fetchPosts: Function = async (): Promise<void> => {
+        setIsLoader(true);
+        const {data} = await axios({method: "GET", url: "https://jsonplaceholder.typicode.com/posts"})
+        // const data = await axios({method: "GET", url: "https://api-staging.tokopedia.com/product-feed/feed/template/all"})
+        console.log("data", data);
+        setPosts(data);
+        setIsLoader(false);
+    }
 
     const updatePost: Function = (postId: number, post: post): void => {
         setPosts((prevPosts: Array<post>): Array<post> => {
@@ -39,7 +53,7 @@ const PostsContextProvider: React.FC<providerProps> = ({children}: providerProps
     }
 
     const value: valueType = useMemo(
-        () => ({posts, setPosts, updatePost, deletePost}),
+        () => ({posts, setPosts, updatePost, deletePost, fetchPosts}),
         [posts]
     );
 
